@@ -21,7 +21,6 @@ public class Main {
         System.out.println(deleteAllRepeat(List.of("1", "1", "61", "1", "31", "21", "14", "1", "2", "2")));
         System.out.println(countStringsWithLetterStarts(List.of("1", "1", "61", "1", "31", "21", "14", "1", "2", "2"), "1"));
         System.out.println(findSecondBiggerInt(List.of(1, 2, 3, 4, 5)));
-        //сделать обертку всего этого в Optional
     }
 
     public static List<String> deleteAllRepeat(List<String> list) {

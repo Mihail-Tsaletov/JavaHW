@@ -1,52 +1,56 @@
 package org.example;
 
-/*
-        Напишите удаление всех повторяющихся элементов из списка [x]
-
-        Напишите подсчет количества строк в списке, которые начинаются с определенной буквы [x]
-
-        Используя оператор findFirst напишите поиск второго по величине элемента в списке целых чисел []
-*/
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Scanner;
 
 public class Main {
+    private static StudentCommandHandler STUDENT_COMMAND_HANDLER = new StudentCommandHandler();
+
     public static void main(String[] args) {
-
-        System.out.println(deleteAllRepeat(List.of("1", "1", "61", "1", "31", "21", "14", "1", "2", "2")));
-        System.out.println(countStringsWithLetterStarts(List.of("1", "1", "61", "1", "31", "21", "14", "1", "2", "2"), "1"));
-        System.out.println(findSecondBiggerInt(List.of(1, 2, 3, 4, 5)));
+        while (true) {
+            printMessage();
+            Command command = readCommand();
+            if (command.getAction() == Action.EXIT) {
+                return;
+            } else if (command.getAction() == Action.ERROR) {
+                continue;
+            } else {
+                STUDENT_COMMAND_HANDLER.processCommand(command);
+            }
+        }
     }
 
-    public static List<String> deleteAllRepeat(List<String> list) {
-        if (list != null)
-            return list.stream()
-                    .collect(Collectors.groupingBy(Function.identity()))
-                    .entrySet()
-                    .stream()
-                    .map(Map.Entry::getKey)
-                    .toList();
-        return null;
+    private static Command readCommand() {
+        Scanner scanner = new Scanner(System.in);
+        try {
+            String code = scanner.nextLine();
+            Integer actionsCode = Integer.valueOf(code);
+            Action action = Action.fromCode(actionsCode);
+            if (action.isRequireAdditionalData()) {
+                String data = scanner.nextLine();
+                if (data.matches(action.getRegex()))
+                    return new Command(action, data);
+                else {
+                    System.out.println("Неверный ввод!");
+                    return new Command(Action.ERROR);
+                }
+            } else
+                return new Command(action);
+        } catch (Exception exception) {
+            System.out.println("Проблема обработки ввода " + exception.getMessage());
+            return new Command(Action.ERROR);
+        }
+
     }
 
-    public static int countStringsWithLetterStarts(List<String> list, String letter) {
-        if (list != null && letter != null)
-            return list.stream().filter(e -> e.startsWith(letter)).toList().size();
-        return -1;
-    }
-
-    public static int findSecondBiggerInt(List<Integer> list) {
-        if (list != null)
-            return list.stream()
-                    .sorted(Comparator.reverseOrder())
-                    .skip(1)
-                    .findFirst()
-                    .get();
-        return -1;
+    public static void printMessage() {
+        System.out.println("-------------------------");
+        System.out.println("0. Выход из приложения");
+        System.out.println("1. Создание данных");
+        System.out.println("2. Обновление данных");
+        System.out.println("3. Удаление данных");
+        System.out.println("4. Вывод статистики по курсам");
+        System.out.println("5. Вывод статистики по городам");
+        System.out.println("6. Поиск по фамилии");
+        System.out.println("-------------------------");
     }
 }
